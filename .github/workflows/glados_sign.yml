@@ -1,0 +1,24 @@
+name: GLaDOS Auto Checkin
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    # 每天国际标准时间 01:00（北京时间 09:00）自动运行
+    - cron: '0 1 * * *'
+  watch:
+    types: [started]
+
+jobs:
+  checkin:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Run Checkin Script
+      run: |
+        curl -X POST "https://glados.rocks/api/user/checkin" \
+        -H "cookie: ${{ secrets.GLADOS_COOKIE }}" \
+        -H "content-type: application/json;charset=UTF-8" \
+        -d '{"token": "glados.one"}'
